@@ -1,0 +1,274 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { playTempleBellFallback } from "@/utils/audio";
+
+interface LoadingScreenProps {
+  onComplete: () => void;
+}
+
+export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isEntering, setIsEntering] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const hasClickedRef = useRef(false);
+
+  const handleEnter = () => {
+    if (hasClickedRef.current) return;
+    hasClickedRef.current = true;
+    setIsEntering(true);
+    // Play bell sound
+    playTempleBellFallback();
+    
+    // Synchronously dispatch sound trigger to bypass browser autoplay restrictions
+    window.dispatchEvent(new CustomEvent("play-invitation-music"));
+
+    // Fade out and invoke parent callback
+    setTimeout(() => {
+      onComplete();
+    }, 1500);
+  };
+
+  useEffect(() => {
+    let welcomeAudio: HTMLAudioElement | null = new Audio("/assets/audio/welcome.wav");
+    welcomeAudio.volume = 0.6;
+
+    let hasPlayed = false;
+    const tryPlay = () => {
+      if (hasPlayed || !welcomeAudio) return;
+      welcomeAudio.play()
+        .then(() => {
+          hasPlayed = true;
+          cleanup();
+        })
+        .catch(() => {
+          // Silent catch if still blocked
+        });
+    };
+
+    const cleanup = () => {
+      window.removeEventListener("click", tryPlay);
+      window.removeEventListener("touchstart", tryPlay);
+    };
+
+    // Try playing immediately
+    tryPlay();
+
+    // Also listen for first interaction to play if blocked initially
+    window.addEventListener("click", tryPlay);
+    window.addEventListener("touchstart", tryPlay);
+
+    // Show the button after 1.5 seconds to allow logo animation to play
+    const timer = setTimeout(() => {
+      setShowButton(true);
+    }, 1500);
+
+    return () => {
+      clearTimeout(timer);
+      cleanup();
+      welcomeAudio = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (showButton) {
+      const autoClickTimer = setTimeout(() => {
+        if (!hasClickedRef.current) {
+          handleEnter();
+        }
+      }, 2000);
+      return () => clearTimeout(autoClickTimer);
+    }
+  }, [showButton]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animationId: number;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Particle class for luxury background swirls
+    class Particle {
+      x: number;
+      y: number;
+      radius: number;
+      color: string;
+      speed: number;
+      angle: number;
+      angularSpeed: number;
+      distance: number;
+      alpha: number;
+      w: number;
+      h: number;
+
+      constructor(width: number, height: number) {
+        this.w = width;
+        this.h = height;
+        this.x = width / 2;
+        this.y = height / 2;
+        this.radius = Math.random() * 2 + 1;
+        this.color = ["#faf7ed", "#ebd7a3", "#cba358", "#fbe6e9"][
+          Math.floor(Math.random() * 4)
+        ];
+        this.angle = Math.random() * Math.PI * 2;
+        this.angularSpeed = (Math.random() - 0.5) * 0.015;
+        this.distance = Math.random() * (Math.max(width, height) / 2) + 20;
+        this.speed = Math.random() * 0.5 + 0.2;
+        this.alpha = Math.random() * 0.5 + 0.3;
+      }
+
+      update() {
+        this.angle += this.angularSpeed;
+        this.distance -= this.speed;
+        if (this.distance < 10) {
+          this.distance = Math.random() * (Math.max(this.w, this.h) / 2) + 20;
+          this.angle = Math.random() * Math.PI * 2;
+        }
+        
+        const centerX = this.w / 2;
+        const centerY = this.h / 2;
+        this.x = centerX + Math.cos(this.angle) * this.distance;
+        this.y = centerY + Math.sin(this.angle) * this.distance;
+      }
+
+      draw(c: CanvasRenderingContext2D) {
+        c.save();
+        c.beginPath();
+        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        c.fillStyle = this.color;
+        c.globalAlpha = this.alpha;
+        c.shadowBlur = 4;
+        c.shadowColor = this.color;
+        c.fill();
+        c.restore();
+      }
+    }
+
+    const particles: Particle[] = Array.from(
+      { length: 80 },
+      () => new Particle(canvas.width, canvas.height)
+    );
+
+    const animate = () => {
+      ctx.fillStyle = "rgba(10, 7, 5, 0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((p) => {
+        p.update();
+        p.draw(ctx);
+      });
+
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(animationId);
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#0a0705] overflow-hidden">
+      {/* Particle Canvas */}
+      <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none" />
+
+      {/* Luxury Overlay Lighting */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(203,163,88,0.15)_0%,transparent_70%)] z-10 pointer-events-none" />
+
+      <AnimatePresence>
+        {!isEntering && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1, filter: "blur(15px)" }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="flex flex-col items-center z-20 text-center px-4"
+          >
+            {/* AH Monogram Badge */}
+            <div className="relative w-44 h-44 mb-8 flex items-center justify-center">
+              {/* Outer Glowing Golden Circles */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 border border-[#cba358]/40 border-dashed rounded-full"
+              />
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-2 border border-[#cba358]/20 rounded-full"
+              />
+              {/* Gold Ornament Frame */}
+              <svg className="absolute w-40 h-44 text-[#cba358]" viewBox="0 0 100 100" fill="none">
+                <path
+                  d="M50 2 C23.5 2 2 23.5 2 50 C2 76.5 23.5 98 50 98 C76.5 98 98 76.5 98 50 C98 23.5 76.5 2 L50 2 Z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                <circle cx="50" cy="50" r="42" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 3" />
+              </svg>
+
+              {/* Logo Image */}
+              <div className="relative w-28 h-28 select-none pointer-events-none filter drop-shadow-[0_0_8px_rgba(203,163,88,0.35)] animate-pulse-slow">
+                <Image
+                  src="/assets/image/logo.png"
+                  alt="Logo"
+                  fill
+                  sizes="112px"
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </div>
+
+            {/* Glowing Text */}
+            <motion.h1
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 1 }}
+              className="font-cinzel text-xs tracking-[0.3em] text-[#ebd8c1]/70 mb-2 uppercase"
+            >
+              The Ring Ceremony
+            </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 1 }}
+              className="h-[1px] w-20 bg-gradient-to-r from-transparent via-[#cba358] to-transparent mb-8"
+            />
+
+            {/* Enter Button with Autoplay permission bypass */}
+            {showButton && (
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                onClick={handleEnter}
+                className="relative px-8 py-3 font-cinzel text-sm tracking-[0.2em] text-[#ebd8c1] overflow-hidden border border-[#cba358]/40 hover:border-[#cba358] rounded transition-all group duration-300 active:scale-95"
+              >
+                {/* Button background shimmer */}
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#cba358]/0 via-[#cba358]/20 to-[#cba358]/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+                ENTER INVITATION
+              </motion.button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
