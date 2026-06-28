@@ -14,13 +14,27 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [isEntering, setIsEntering] = useState(false);
   const [showButton, setShowButton] = useState(false);
   const hasClickedRef = useRef(false);
+  const welcomePlayedRef = useRef(false);
 
   const handleEnter = () => {
     if (hasClickedRef.current) return;
     hasClickedRef.current = true;
     setIsEntering(true);
+    
     // Play bell sound
     playTempleBellFallback();
+
+    // Play welcome audio if not already played
+    if (!welcomePlayedRef.current) {
+      welcomePlayedRef.current = true;
+      try {
+        const welcome = new Audio("/assets/audio/welcome.wav");
+        welcome.volume = 0.6;
+        welcome.play().catch((e) => console.warn("Welcome audio blocked in click handler:", e));
+      } catch (e) {
+        console.warn("Welcome audio play failed:", e);
+      }
+    }
     
     // Synchronously dispatch sound trigger to bypass browser autoplay restrictions
     window.dispatchEvent(new CustomEvent("play-invitation-music"));
@@ -35,12 +49,11 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
     let welcomeAudio: HTMLAudioElement | null = new Audio("/assets/audio/welcome.wav");
     welcomeAudio.volume = 0.6;
 
-    let hasPlayed = false;
     const tryPlay = () => {
-      if (hasPlayed || !welcomeAudio) return;
+      if (welcomePlayedRef.current || !welcomeAudio) return;
       welcomeAudio.play()
         .then(() => {
-          hasPlayed = true;
+          welcomePlayedRef.current = true;
           cleanup();
         })
         .catch(() => {
@@ -71,17 +84,6 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       welcomeAudio = null;
     };
   }, []);
-
-  useEffect(() => {
-    if (showButton) {
-      const autoClickTimer = setTimeout(() => {
-        if (!hasClickedRef.current) {
-          handleEnter();
-        }
-      }, 2000);
-      return () => clearTimeout(autoClickTimer);
-    }
-  }, [showButton]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -256,14 +258,28 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
             {showButton && (
               <motion.button
                 initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0,
+                  scale: [1, 1.06, 1],
+                  boxShadow: [
+                    "0 0 0px rgba(203,163,88,0.2)",
+                    "0 0 25px rgba(203,163,88,0.7)",
+                    "0 0 0px rgba(203,163,88,0.2)"
+                  ]
+                }}
+                transition={{ 
+                  opacity: { duration: 0.8 },
+                  y: { duration: 0.8 },
+                  scale: { repeat: Infinity, duration: 2, ease: "easeInOut" },
+                  boxShadow: { repeat: Infinity, duration: 2, ease: "easeInOut" }
+                }}
                 onClick={handleEnter}
-                className="relative px-8 py-3 font-cinzel text-sm tracking-[0.2em] text-[#ebd8c1] overflow-hidden border border-[#cba358]/40 hover:border-[#cba358] rounded transition-all group duration-300 active:scale-95"
+                className="relative px-8 py-3.5 font-sans text-base font-bold tracking-[0.1em] text-[#ebd8c1] overflow-hidden border-2 border-[#cba358] rounded-lg transition-all group duration-300 active:scale-95 bg-[#0b0805]/80 hover:bg-[#cba358] hover:text-[#0b0805] shadow-[0_0_15px_rgba(203,163,88,0.3)] cursor-pointer"
               >
                 {/* Button background shimmer */}
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#cba358]/0 via-[#cba358]/20 to-[#cba358]/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
-                ENTER INVITATION
+                👆 निमंत्रण खोलें
               </motion.button>
             )}
           </motion.div>
