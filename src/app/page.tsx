@@ -29,8 +29,8 @@ export default function Home() {
       {/* 1. Golden Sparkle Cursor (Rendered everywhere for luxury feedback) */}
       <SparkleCursor />
 
-      {/* 2. Floating Audio Player (Active once entered/reveal clicked) */}
-      {loadingState !== "loading" && <AudioPlayer />}
+      {/* 2. Floating Audio Player (Active from load to bypass autoplay blockers) */}
+      <AudioPlayer />
 
       {/* 3. Slim Sticky Footer with Calling & Navigation shortcuts */}
       {loadingState === "invitation" && <StickyFooter />}

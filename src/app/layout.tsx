@@ -27,32 +27,57 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
+const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "https://ring-ceremony-invitation.vercel.app";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || productionUrl;
+
 export const metadata: Metadata = {
-  metadataBase: process.env.NEXT_PUBLIC_SITE_URL
-    ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
-    : new URL("https://ring-ceremony-invitation.vercel.app"),
+  metadataBase: new URL(siteUrl),
   title: "Ashindra & Himanshi - Royal Ring Ceremony Invitation",
-  description: "You are cordially invited to celebrate the auspicious Ring Ceremony of Ashindra & Himanshi on July 3, 2026. Join us for a royal celebration.",
+  description: "आप सादर आमंत्रित हैं।\n\nहमारे रिंग समारोह (03 July 2026) में आपकी स्नेहमयी उपस्थिति हमारे लिए अत्यंत हर्ष एवं सौभाग्य का विषय होगी।",
+  keywords: [
+    "Ring Ceremony",
+    "Wedding Invitation",
+    "Ashindra",
+    "Himanshi",
+    "Pandav Guest House",
+    "Digital Invitation",
+    "Indian Wedding"
+  ],
+  authors: [{ name: "Anendra Sengar" }],
+  applicationName: "Ashindra & Himanshi",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Ashindra & Himanshi - Royal Ring Ceremony Invitation",
-    description: "आप सादर आमंत्रित हैं। हमारे रिंग समारोह (03 July 2026) में आपकी स्नेहमयी उपस्थिति हमारे लिए अत्यंत हर्ष एवं सौभाग्य का विषय होगी।",
-    siteName: "Ashindra & Himanshi Ring Ceremony Invitation",
+    description: "💍 Ring Ceremony\n📅 03 July 2026\n📍 Pandav Guest House & Resort\nRagaul, Uttar Pradesh",
+    siteName: "Ashindra & Himanshi Ring Ceremony",
+    type: "website",
+    locale: "en_IN",
     images: [
       {
-        url: "/assets/image/welcome.png",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Ashindra & Himanshi Ring Ceremony Invitation",
       },
     ],
-    locale: "en_IN",
-    type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Ashindra & Himanshi - Royal Ring Ceremony Invitation",
-    description: "You are cordially invited to celebrate the auspicious Ring Ceremony of Ashindra & Himanshi on July 3, 2026.",
-    images: ["/assets/image/welcome.png"],
+    description: "💍 Ring Ceremony\n📅 03 July 2026\n📍 Pandav Guest House & Resort\nRagaul, Uttar Pradesh",
+    images: ["/og-image.jpg"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/icon.png",
+    apple: "/apple-touch-icon.png",
   },
   robots: {
     index: true,
