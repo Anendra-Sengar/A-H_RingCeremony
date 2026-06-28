@@ -108,7 +108,7 @@ export default function CoupleSection() {
 
           {/* Groom Bio */}
           <div className="mb-6">
-            <h3 className="font-cinzel text-lg text-gold-gradient tracking-widest mb-2 uppercase">
+            <h3 className="font-cinzel text-2xl md:text-3xl text-gold-gradient font-bold tracking-widest mb-2 uppercase">
               {invitationConfig.couple.groom.fullname}
             </h3>
             <p className="font-sans text-xs text-[#ebd8c1]/70 tracking-wide max-w-md leading-relaxed">
@@ -122,7 +122,7 @@ export default function CoupleSection() {
 
           {/* Bride Bio */}
           <div>
-            <h3 className="font-cinzel text-lg text-gold-gradient tracking-widest mb-2 uppercase">
+            <h3 className="font-cinzel text-2xl md:text-3xl text-gold-gradient font-bold tracking-widest mb-2 uppercase">
               {invitationConfig.couple.bride.fullname}
             </h3>
             <p className="font-sans text-xs text-[#ebd8c1]/70 tracking-wide max-w-md leading-relaxed">

@@ -83,13 +83,13 @@ export const invitationConfig: InvitationConfig = {
   timeline: [
     {
       time: "11:00 AM",
-      title: "Departure",
-      description: "Departure from Kurara",
+      title: "प्रस्थान",
+      description: "कुरारा से प्रस्थान",
       mapsUrl: "https://maps.app.goo.gl/otRRjKjoqY1EPSXL7",
     },
     {
       time: "02:00 PM",
-      title: "Arrival",
+      title: "आगमन",
       description: "Arrival at Pandav Guest House & Resort, Near Govt. Hospital, Ragaul, Maudaha, Uttar Pradesh - 210507",
       mapsUrl: "https://maps.app.goo.gl/WY5hQGtZEuMjEP2Z8",
     },

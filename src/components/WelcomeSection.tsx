@@ -168,7 +168,7 @@ export default function WelcomeSection() {
           className="font-sans text-lg md:text-2xl text-[#ebd8c1]/70 max-w-2xl mb-12 leading-relaxed whitespace-pre-line"
         >
           आप सादर आमंत्रित हैं।{"\n"}
-          हमारे शुभ रिंग समारोह में आपकी उपस्थिति हमारे लिए सौभाग्य का विषय होगी।
+          आइए खुशियों के इस अनमोल अवसर में हमारे साथ सहभागी बनें।
         </motion.p>
 
         {/* Couple Title */}

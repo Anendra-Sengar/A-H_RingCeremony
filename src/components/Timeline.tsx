@@ -51,17 +51,17 @@ export default function Timeline() {
                     }`}
                   >
                     {/* Timestamp Badge */}
-                    <span className="font-cinzel text-[10px] tracking-widest text-[#cba358] font-bold block mb-2">
+                    <span className="font-cinzel text-lg md:text-xl tracking-widest text-[#cba358] font-bold block mb-2">
                       {item.time}
                     </span>
 
                     {/* Title */}
-                    <h3 className="font-cinzel text-base text-[#ebd8c1] font-semibold tracking-wider mb-3 uppercase">
+                    <h3 className="font-cinzel text-lg md:text-xl text-[#ebd8c1] font-semibold tracking-wider mb-3 uppercase">
                       {item.title}
                     </h3>
 
                     {/* Description */}
-                    <p className="font-sans text-xs text-[#ebd8c1]/60 tracking-wider leading-relaxed">
+                    <p className="font-sans text-sm md:text-base text-[#ebd8c1]/80 tracking-wider leading-relaxed">
                       {item.description}
                     </p>
 
@@ -71,7 +71,7 @@ export default function Timeline() {
                         href={item.mapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 border border-[#cba358]/40 hover:border-[#cba358] text-[10px] font-cinzel tracking-widest text-[#ebd8c1] rounded hover:bg-[#cba358] hover:text-[#0b0805] transition-all duration-300"
+                        className="inline-flex items-center gap-1.5 mt-4 px-4 py-2.5 border border-[#cba358]/40 hover:border-[#cba358] text-xs font-cinzel tracking-widest text-[#ebd8c1] rounded hover:bg-[#cba358] hover:text-[#0b0805] transition-all duration-300"
                       >
                         VIEW LOCATION
                       </a>
