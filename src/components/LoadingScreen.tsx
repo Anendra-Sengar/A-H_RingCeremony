@@ -256,31 +256,81 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
             {/* Enter Button with Autoplay permission bypass */}
             {showButton && (
-              <motion.button
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ 
-                  opacity: 1, 
-                  y: 0,
-                  scale: [1, 1.06, 1],
-                  boxShadow: [
-                    "0 0 0px rgba(203,163,88,0.2)",
-                    "0 0 25px rgba(203,163,88,0.7)",
-                    "0 0 0px rgba(203,163,88,0.2)"
-                  ]
-                }}
-                transition={{ 
-                  opacity: { duration: 0.8 },
-                  y: { duration: 0.8 },
-                  scale: { repeat: Infinity, duration: 2, ease: "easeInOut" },
-                  boxShadow: { repeat: Infinity, duration: 2, ease: "easeInOut" }
-                }}
-                onClick={handleEnter}
-                className="relative px-8 py-3.5 font-sans text-base font-bold tracking-[0.1em] text-[#ebd8c1] overflow-hidden border-2 border-[#cba358] rounded-lg transition-all group duration-300 active:scale-95 bg-[#0b0805]/80 hover:bg-[#cba358] hover:text-[#0b0805] shadow-[0_0_15px_rgba(203,163,88,0.3)] cursor-pointer"
-              >
-                {/* Button background shimmer */}
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#cba358]/0 via-[#cba358]/20 to-[#cba358]/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
-                👆 निमंत्रण खोलें
-              </motion.button>
+              <div className="relative">
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0,
+                    scale: [1, 1.06, 1],
+                    boxShadow: [
+                      "0 0 0px rgba(203,163,88,0.2)",
+                      "0 0 25px rgba(203,163,88,0.7)",
+                      "0 0 0px rgba(203,163,88,0.2)"
+                    ]
+                  }}
+                  transition={{ 
+                    opacity: { duration: 0.8 },
+                    y: { duration: 0.8 },
+                    scale: { repeat: Infinity, duration: 2, ease: "easeInOut" },
+                    boxShadow: { repeat: Infinity, duration: 2, ease: "easeInOut" }
+                  }}
+                  onClick={handleEnter}
+                  className="relative px-8 py-3.5 font-sans text-base font-bold tracking-[0.1em] text-[#ebd8c1] overflow-hidden border-2 border-[#cba358] rounded-lg transition-all group duration-300 active:scale-95 bg-[#0b0805]/80 hover:bg-[#cba358] hover:text-[#0b0805] shadow-[0_0_15px_rgba(203,163,88,0.3)] cursor-pointer"
+                >
+                  {/* Button background shimmer */}
+                  <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#cba358]/0 via-[#cba358]/20 to-[#cba358]/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+                  निमंत्रण खोलें
+                </motion.button>
+
+                {/* Animated Finger Tap Gesture Overlay */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ 
+                    opacity: [0.45, 0.85, 0.45],
+                    scale: [1, 0.85, 1],
+                    y: ["0%", "8%", "0%"],
+                    x: ["-50%", "-50%", "-50%"]
+                  }}
+                  transition={{
+                    duration: 1.6,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="absolute bottom-0.5 left-1/2 pointer-events-none z-20 flex flex-col items-center"
+                >
+                  {/* Tapping hand index finger */}
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-7 h-7 text-[#cba358]/80 filter drop-shadow-[0_0_6px_rgba(203,163,88,0.6)]"
+                  >
+                    <path d="M10 13V5a1.5 1.5 0 0 1 3 0v8" />
+                    <path d="M13 8.5a1.5 1.5 0 0 1 3 0v4.5" />
+                    <path d="M16 10a1.5 1.5 0 0 1 3 0v3" />
+                    <path d="M7 11.5a1.5 1.5 0 0 1 3 0" />
+                    <path d="M6 15a4 4 0 0 0 8 0" />
+                  </svg>
+                  
+                  {/* Tap ripple circle at the fingertip */}
+                  <motion.div
+                    animate={{
+                      scale: [0.6, 1.8, 0.6],
+                      opacity: [0.7, 0, 0.7],
+                    }}
+                    transition={{
+                      duration: 1.6,
+                      repeat: Infinity,
+                      ease: "easeOut"
+                    }}
+                    className="absolute top-0.5 left-[10px] w-3.5 h-3.5 border border-[#cba358]/70 rounded-full"
+                  />
+                </motion.div>
+              </div>
             )}
           </motion.div>
         )}
