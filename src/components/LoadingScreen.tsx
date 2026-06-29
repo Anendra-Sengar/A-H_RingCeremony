@@ -20,7 +20,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
     if (hasClickedRef.current) return;
     hasClickedRef.current = true;
     setIsEntering(true);
-    
+
     // Play bell sound
     playTempleBellFallback();
 
@@ -35,7 +35,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
         console.warn("Welcome audio play failed:", e);
       }
     }
-    
+
     // Synchronously dispatch sound trigger to bypass browser autoplay restrictions
     window.dispatchEvent(new CustomEvent("play-invitation-music"));
 
@@ -138,7 +138,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           this.distance = Math.random() * (Math.max(this.w, this.h) / 2) + 20;
           this.angle = Math.random() * Math.PI * 2;
         }
-        
+
         const centerX = this.w / 2;
         const centerY = this.h / 2;
         this.x = centerX + Math.cos(this.angle) * this.distance;
@@ -259,8 +259,8 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
               <div className="relative">
                 <motion.button
                   initial={{ opacity: 0, y: 10 }}
-                  animate={{ 
-                    opacity: 1, 
+                  animate={{
+                    opacity: 1,
                     y: 0,
                     scale: [1, 1.06, 1],
                     boxShadow: [
@@ -269,7 +269,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
                       "0 0 0px rgba(203,163,88,0.2)"
                     ]
                   }}
-                  transition={{ 
+                  transition={{
                     opacity: { duration: 0.8 },
                     y: { duration: 0.8 },
                     scale: { repeat: Infinity, duration: 2, ease: "easeInOut" },
@@ -286,7 +286,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
                 {/* Animated Finger Tap Gesture Overlay */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ 
+                  animate={{
                     opacity: [0.45, 0.85, 0.45],
                     scale: [1, 0.85, 1],
                     y: ["0%", "8%", "0%"],
@@ -297,7 +297,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
-                  className="absolute bottom-0.5 left-1/2 pointer-events-none z-20 flex flex-col items-center"
+                  className="absolute bottom-[-10] left-1/2 pointer-events-none z-20 flex flex-col items-center"
                 >
                   {/* Tapping hand index finger */}
                   <svg
@@ -315,7 +315,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
                     <path d="M7 11.5a1.5 1.5 0 0 1 3 0" />
                     <path d="M6 15a4 4 0 0 0 8 0" />
                   </svg>
-                  
+
                   {/* Tap ripple circle at the fingertip */}
                   <motion.div
                     animate={{

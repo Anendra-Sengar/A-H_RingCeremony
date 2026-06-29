@@ -35,7 +35,7 @@ export default function Home() {
       if (e.type === "scroll" && autoScrollActiveRef.current) {
         return;
       }
-      
+
       // User performed manual interaction/scroll
       setHasManuallyScrolled(true);
       setShowScrollIndicator(false);
@@ -61,12 +61,12 @@ export default function Home() {
       const currentScroll = window.scrollY || document.documentElement.scrollTop;
       if (currentScroll === 0) {
         autoScrollActiveRef.current = true;
-        
+
         window.scrollTo({
           top: 220,
           behavior: "smooth"
         });
-        
+
         // Show the indicator
         setShowScrollIndicator(true);
 
